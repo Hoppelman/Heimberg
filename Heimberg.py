@@ -28,6 +28,7 @@ def CustomChatGPT(user_input, voice_model):
     ChatGPT_reply = response["choices"][0]["message"]["content"]
     messages.append({"role": "assistant", "content": ChatGPT_reply})
 
+
     audio = generate(
         text=ChatGPT_reply,
         voice=voice_model,
