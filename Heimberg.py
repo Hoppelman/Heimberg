@@ -1,3 +1,4 @@
+import config;
 from elevenlabs import generate, play, voices, save, clone
 from elevenlabs import set_api_key
 set_api_key("4dbbe510c74cc81977dab25f205ef7e8")
