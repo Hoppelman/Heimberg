@@ -160,4 +160,4 @@ cython_debug/
 #.idea/
 
 # API Keys
-config.py
+config.json
