@@ -8,3 +8,9 @@ source venv/bin/activate
 
 Install packages:
 pip install -r requirements.txt
+
+Add a config.json file. Copy this code into the file and replace the X's for the API keys:
+{
+  "api_key": "XXX",
+  "elevenLabs_key": "XXX"
+}
