@@ -4,8 +4,8 @@ from elevenlabs import set_api_key
 voiceList = []
 voices = voices()
 
-def initElevenLabs(api_key):
-  set_api_key(api_key)
+def initElevenLabs():
+  #set_api_key(api_key)
   global voiceList
   for n in voices.voices:
     if n.category == 'cloned':
@@ -46,5 +46,7 @@ def cloneVoice(recording1, name, description):
     )
 
     voiceList.append(name)
+    print(voiceList)
+    initElevenLabs()
 
     return "clone.wav"

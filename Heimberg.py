@@ -1,15 +1,20 @@
-import config;
+import json;
 from elevenlabs import clone
 from elevenlabs import set_api_key
-set_api_key("4dbbe510c74cc81977dab25f205ef7e8")
+
+with open('config.json') as f:
+    config = json.load(f)
+
+set_api_key(config['elevenLabs_key'])
 
 
 from openAI_functions import initOpenAI, generateText
 from elevenLabs_functions import initElevenLabs, textToSpeech, cloneVoice, voiceList
 import gradio as gr
 
-initOpenAI("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", "Du sollst höchstens in 2 Wörtern antworten.")
-initElevenLabs("4dbbe510c74cc81977dab25f205ef7e8")
+
+initOpenAI(config['api_key'], "Du sollst höchstens in 2 Wörtern antworten.")
+initElevenLabs()
 
 
 def getAnswerWithVoice(user_input, voice_model):

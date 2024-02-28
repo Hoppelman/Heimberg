@@ -1,4 +1,8 @@
-Seperate Funktion für ChatGPT response und ElevenLabs API Call
+Seperate Funktion für ChatGPT response und ElevenLabs API Call //Umgesetzt
+
+Cloning radio button hinzufügen 
+
+Streaming implementieren, maybe?
 
 BackUp File einfügen
 
