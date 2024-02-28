@@ -40,7 +40,7 @@ with gr.Blocks() as demo:
         with gr.Column():
             text_output = gr.Textbox(lines = 4, label = "Antwort:")
             audio_output = gr.Audio(autoplay = True)
-            btn_refresh = gr.Button(value="Refresh the page")
+            btn_refresh = gr.Button(value="Seite neu laden")
             
         
     #btn_refresh.click(None, _js="window.location.reload()")
