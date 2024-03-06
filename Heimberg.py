@@ -9,17 +9,18 @@ set_api_key(config['elevenLabs_key'])
 
 
 from openAI_functions import initOpenAI, generateText
-from elevenLabs_functions import initElevenLabs, textToSpeech, cloneVoice, voiceList
+from elevenLabs_functions import initElevenLabs, textToSpeech, cloneVoice, voiceList, streamVoice
 import gradio as gr
 
 
-initOpenAI(config['api_key'], "Du sollst höchstens in 2 Wörtern antworten.")
+initOpenAI(config['api_key'], "Du sollst höchstens in 2 Sätzen antworten.")
 initElevenLabs()
 
 
 def getAnswerWithVoice(user_input, voice_model):
     text = generateText(user_input)
     outputFile = textToSpeech(text, voice_model)
+    print(voice_model)
     #outputFile = "test.wav"
     return text, outputFile
 
@@ -39,12 +40,12 @@ with gr.Blocks() as demo:
                     klon_button = gr.Button("klonen")
         with gr.Column():
             text_output = gr.Textbox(lines = 4, label = "Antwort:")
-            audio_output = gr.Audio(autoplay = True)
+            audio_output = gr.Audio(autoplay = False)
             btn_refresh = gr.Button(value="Seite neu laden")
             
         
-    #btn_refresh.click(None, _js="window.location.reload()")
+    btn_refresh.click(streamVoice, None, None)
     text_button.click(getAnswerWithVoice, inputs = [text_input, voice_radio], outputs = [text_output, audio_output])
     klon_button.click(cloneVoice, inputs = [clone_recording1, name_clone, description_clone], outputs = [audio_output])
 
-demo.launch(share=True)
+demo.launch(share=False)

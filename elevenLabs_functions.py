@@ -1,4 +1,4 @@
-from elevenlabs import generate, play, voices, save, clone
+from elevenlabs import generate, play, voices, save, clone, stream
 from elevenlabs import set_api_key
 
 voiceList = []
@@ -10,6 +10,9 @@ def initElevenLabs():
   for n in voices.voices:
     if n.category == 'cloned':
         voiceList.append(n.name)
+
+  voiceList.append("M.Klon")
+  voiceList.append("A.Klon")
   print(voiceList)
 
 def textToSpeech(text, voice_model):
@@ -19,7 +22,7 @@ def textToSpeech(text, voice_model):
     audio = generate(
         text=text,
         voice=voice_model,
-        model="eleven_multilingual_v1"
+        model="eleven_multilingual_v2"
     )
     save (
         audio = audio,
@@ -35,18 +38,30 @@ def cloneVoice(recording1, name, description):
         files=[recording1],
     )
     audio = generate(
-        text="Hallo das ist meine geklonte Stimme! Juhuuu!",
-        voice=voice_recording,
+        text="Ich bin es, dein Klon.",
+        voice=name,
         model="eleven_multilingual_v1"
     )
 
+    fileName = "clone.wav"
+
+
     save (
         audio = audio,
-        filename = "clone.wav"
+        filename = "Clone.wav"
     )
 
     voiceList.append(name)
     print(voiceList)
     initElevenLabs()
 
-    return "clone.wav"
+    return fileName
+
+def streamVoice(): 
+    audio_stream = generate(
+        # api_key="YOUR_API_KEY", (Defaults to os.getenv(ELEVEN_API_KEY))
+        text="This is a... streaming voice!!",
+        stream=True
+    )
+    print(audio_stream)
+    print(stream(audio_stream))

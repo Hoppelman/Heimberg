@@ -14,3 +14,10 @@ Add a config.json file. Copy this code into the file and replace the X's for the
   "api_key": "XXX",
   "elevenLabs_key": "XXX"
 }
+
+Auf mac falls ffmpeg nicht gefunden werden kann:
+brew install ffmpeg
+
+Für streaming auf mac wird mpv benötigt:
+brew install mpv
+
