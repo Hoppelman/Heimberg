@@ -1,8 +1,18 @@
 Seperate Funktion für ChatGPT response und ElevenLabs API Call //Umgesetzt
 
-Synthetische Stimme erstellen
+Prio.1 
+Synthetische Stimme erstellen --> Schauen ob das geht 
 
+Prio 2.
 Add Speech to text to the interface Sichtbarmachung durch einen Button
+
+Prio 3 
+Add clone loop -> Loop based on cloned voice audio multiple iterations 
+
+Prio 4
+Pflasterstein Loop -> Wie wirkt das 
+
+
 
 Add speach recognition
 

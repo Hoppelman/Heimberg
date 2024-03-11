@@ -10,7 +10,9 @@ def initOpenAI(api_key, content):
   messages = [{"role": "system", "content": content}]
 
 def generateText(user_input):
+    
     messages.append({"role": "user", "content": user_input})
+    print(messages)
 
     response = client.chat.completions.create(
         messages = messages,
