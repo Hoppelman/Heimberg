@@ -9,7 +9,6 @@ set_api_key(config['elevenLabs_key'])
 
 from openAI_functions import initOpenAI, generateText
 from elevenLabs_functions import initElevenLabs, textToSpeech, cloneVoice, voiceList, generateVoice, deleteVoice
-from speechToText import speechToText
 import gradio as gr
 
 initOpenAI(config['api_key'], "")
