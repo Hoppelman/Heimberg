@@ -6,6 +6,7 @@ function textToSpeech() {
     var textarea = containerDiv.querySelector('[data-testid="textbox"]');
     console.log(textarea);
     let output_text = textarea.value;
+    let currentText = "";
     //textarea.value = output_text;
 
     window.SpeechRecognition =
@@ -16,7 +17,7 @@ function textToSpeech() {
 
     const recognition = new SpeechRecognition();
     console.log(recognition);
-    recognition.interimResults = false;
+    recognition.interimResults = true;
     let state = "sleep";
 
     recognition.addEventListener("result", (e) => {
@@ -25,14 +26,22 @@ function textToSpeech() {
             .map((result) => result.transcript)
             .join("");
 
-        console.log(text);
+        
+        currentText = text;
+        
         if (e.results[0].isFinal) {
             //text = text.toLowerCase();
             console.log(text);
-            output_text = output_text + " \n" + text;
+            /*output_text = output_text + " \n" + text;
             textarea.value = output_text;
-            
+            textarea.scrollTop = textarea.scrollHeight;*/
+            output_text = output_text + text + "\n" ;
+            textarea.scrollTop = textarea.scrollHeight;
 
+        } else {
+            console.log(text);
+            textarea.value = output_text + currentText;
+            textarea.scrollTop = textarea.scrollHeight;
         }
     });
 
@@ -43,4 +52,5 @@ function textToSpeech() {
     });
 
     recognition.start();
+
 }

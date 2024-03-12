@@ -1,31 +1,34 @@
 Seperate Funktion für ChatGPT response und ElevenLabs API Call //Umgesetzt
 
+
+Tests durchführen wie man Antwortgeschwindigkeit reduzieren kann (Latenz reduzieren)
+
 Prio.1 
-Synthetische Stimme erstellen --> Schauen ob das geht 
+Synthetische Stimme erstellen --> Schauen ob das geht //Testen
 
 Prio 2.
-Add Speech to text to the interface Sichtbarmachung durch einen Button
+Add Speech to text to the interface Sichtbarmachung durch einen Button//Umgesetzt
 
 Prio 3 
-Add clone loop -> Loop based on cloned voice audio multiple iterations 
+Add clone loop -> Loop based on cloned voice audio multiple iterations //Kostet zu viel
 
 Prio 4
-Pflasterstein Loop -> Wie wirkt das 
+Pflasterstein Loop -> Wie wirkt das //Testen, kostet zu viel
 
 
 
-Add speach recognition
+Add speach recognition //Done
 
-Cloning radio button hinzufügen 
+Cloning radio button hinzufügen //Done
 
-Streaming implementieren, maybe?
+Streaming implementieren, maybe?//Naaaah
 
-BackUp File einfügen
+BackUp File einfügen//Nicht live
 
 Szenen Tracker entwickeln -> Anzeige bei welche Szene man sich befindet, evt. auch mit Text, 
 passende audio cues und BackUp files für jede Szene
 
-Tests durchführen wie man Antwortgeschwindigkeit reduzieren kann (Latenz reduzieren)
+
 
 Weitere Parameter für die Stimme einbauen, wenn möglich
 
