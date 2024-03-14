@@ -17,13 +17,9 @@ def initElevenLabs(key):
 def updateVoiceList():
     global voiceList, myVoices
     myVoices = voices()
-    #voiceList = []
     for n in myVoices.voices:
         if n.category != 'premade':
             voiceList.append(n.name)
-            #print(n.voice_id)
-    #voiceList.append("M.Klon")
-    #voiceList.append("A.Klon")
     print("Print voiceList: ")
     print(voiceList)
 
@@ -36,7 +32,6 @@ def getVoiceList():
 def textToSpeech(text, voice_model):
     print("textToSpeech")
     
-
     if voice_model is None:
        voice_model = voiceList[2]
 
@@ -47,20 +42,14 @@ def textToSpeech(text, voice_model):
     )
     save (
         audio = audio,
-        filename = "recordings/outputGPT.wav"
+        filename = "recordings/output.wav"
     )
     
-
-    return "recordings/outputGPT.wav"
+    return "recordings/output.wav"
     
-
-
+#For cloning the voice. Also called when generating a voice, recording is then the sample generated
 def cloneVoice(text, recording, name, description, A_check, M_check, output_check):
     print("cloning....")
-    #print("Use A: " + A_check)
-    #print("Use M: " + M_check)
-    #print("Use recording: " + recording)
-    #print("Use generated audio: " + output_check)
 
     files = []
 
@@ -74,7 +63,7 @@ def cloneVoice(text, recording, name, description, A_check, M_check, output_chec
             saveRecording(recording, "recordings/A.Recording.wav")
 
     if output_check:
-        files.append("recordings/voiceGeneration.wav")
+        files.append("recordings/output.wav")
 
     if A_check:
         files.append("recordings/A.Recording.wav")
@@ -82,11 +71,15 @@ def cloneVoice(text, recording, name, description, A_check, M_check, output_chec
     if M_check:
         files.append("recordings/M.Recording.wav")
 
-    voice_recording = clone(
+    clone(
         name=name,
         description=description, # Optional
         files=files,
     )
+
+    print("Voices used for cloning: ")
+    print(files)
+
     audio = generate(
         text=text,
         voice=name,
@@ -95,15 +88,14 @@ def cloneVoice(text, recording, name, description, A_check, M_check, output_chec
 
     save (
         audio = audio,
-        filename = "recordings/clone.wav"
+        filename = "recordings/output.wav"
     )
 
     global voiceList
     voiceList = []
     updateVoiceList()
-    #initElevenLabs("4dbbe510c74cc81977dab25f205ef7e8")
 
-    return "recordings/clone.wav"
+    return "recordings/output.wav"
 
 
 def saveRecording(filePath, fileName):
@@ -137,9 +129,9 @@ def generateVoice(gender, age, accent, accentStrength, text):
     print(response_g)
 
     if response_g.status_code == 200:
-        print("Voice deleted successfully.")
+        print("Voice successfully created.")
     else:
-        print(f"Error deleting voice. Status code: {response_g.status_code}")
+        print(f"Error creating voice. Status code: {response_g.status_code}")
         try:
             error_message = response_g.json().get("message")
             print(f"Error message: {error_message}")
@@ -190,52 +182,9 @@ def deleteVoice(name):
 def getAccountData():
     url = "https://api.elevenlabs.io/v1/user/subscription"
 
-    headers = {"xi-api-key": "4dbbe510c74cc81977dab25f205ef7e8"}
+    headers = {"xi-api-key": elevenLabs_key}
 
     response = requests.request("GET", url, headers=headers)
-    print("Voice edit/add used: " + str(95 - response.json().get("voice_add_edit_counter")))
+    print("Remaining voices: " + str(95 - response.json().get("voice_add_edit_counter")))
+    return "Remaining voices: " + str(95 - response.json().get("voice_add_edit_counter")) + "\n" + "Remaining characters: " + str(response.json().get("character_limit") - response.json().get("character_count"))
 
-def cloneLoop(recording, iterations):
-    return ""
-    '''
-    def generateVoice(text, accent, accent_strength, age, gender):
-    API Call for generating voice with model:
-    
-
-        url = "https://api.elevenlabs.io/v1/text-to-speech/ApxSyhfCtUlzOxkGkSIj"
-
-    payload = {
-        "model_id": "eleven_multilingual_v2",
-        "text": "Sag mal, wie geht es dir so?",
-        "voice_settings": {
-            "similarity_boost": 0.7,
-            "stability": 0.7
-        }
-    }
-    headers = {
-        "xi-api-key": "4dbbe510c74cc81977dab25f205ef7e8",
-        "Content-Type": "application/json"
-    }
-
-    response = requests.request("POST", url, json=payload, headers=headers)
-
-    with open('test.wav', 'wb') as f:
-        for chunk in response.iter_content(chunk_size=1024):
-            if chunk:
-                f.write(chunk)
-
-    return "test.wav"
-    print(response)
-
-
-
-
-    def streamVoice(): 
-    audio_stream = generate(
-        # api_key="YOUR_API_KEY", (Defaults to os.getenv(ELEVEN_API_KEY))
-        text="This is a... streaming voice!!",
-        stream=True
-    )
-    print(audio_stream)
-    print(stream(audio_stream))
-    '''

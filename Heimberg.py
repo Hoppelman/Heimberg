@@ -2,6 +2,7 @@ import json;
 import time;
 from elevenlabs import clone
 from elevenlabs import set_api_key
+import os
 
 with open('config.json') as f:
     config = json.load(f)
@@ -9,7 +10,8 @@ with open('config.json') as f:
 set_api_key(config['elevenLabs_key'])
 
 from openAI_functions import initOpenAI, generateText
-from elevenLabs_functions import initElevenLabs, textToSpeech, cloneVoice, voiceList, generateVoice, deleteVoice, updateVoiceList, getVoiceList
+from elevenLabs_functions import initElevenLabs, textToSpeech, cloneVoice, voiceList, generateVoice, deleteVoice, getVoiceList, getAccountData
+from textTemplates import textTemplates
 import gradio as gr
 
 initOpenAI(config['api_key'], "Antworte maximal in 4 Sätzen.")
@@ -17,16 +19,17 @@ initElevenLabs(config['elevenLabs_key'])
 
 
 def getAnswerWithVoice(user_input, voice_model):
-    
     text = generateText(user_input)
     outputFile = textToSpeech(text, voice_model)
     print(voice_model)
     return text, outputFile
 
-
 def press_reloadButton():
     print(voiceList)
-    return gr.Radio(getVoiceList(), label="Voice", every = 1)
+    return gr.Radio(getVoiceList(), label="Voice", every = 1), gr.Textbox(getAccountData(), lines = 1, show_label = False)
+
+def press_reloadRemainButton():
+    return gr.Textbox(getAccountData(), lines = 1, show_label = False)
 
 def press_deleteButton(voice_name): 
     deleteVoice(voice_name)
@@ -36,19 +39,26 @@ def press_cloneButton(text_input, clone_recording1, name_clone, description_clon
     audio_response = cloneVoice(text_input, clone_recording1, name_clone, description_clone, A_check, M_check, output_check)
     return audio_response, gr.Radio(getVoiceList(), label="Voice", every=1)
 
-def press_generateButton(name, gender, age, accent, accentStrength, text):
+def press_generateButton(name, gender, age, accent, accentStrength, text, description):
     print("GenerateButton")
-    voice_sample = generateVoice(gender, age, accent, accentStrength, text)
-    return voice_sample, gr.Radio(getVoiceList(), label="Voice", every=1)
+    generate_text = "First we thought the PC was a calculator. Then we found out how to turn numbers into letters and we thought it was a typewriter."
+    voice_sample = generateVoice(gender, age, accent, accentStrength, generate_text)
+    audio_response = cloneVoice(text, voice_sample, name, description, False, False, False)
+    return audio_response, gr.Radio(getVoiceList(), label="Voice", every=1)
 
 
 with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as demo:
     with gr.Row():
         with gr.Column():
             text_input = gr.Textbox(lines = 4, label = "Eingabe:")
+            with gr.Accordion("Vorlagen:"): 
+                gr.Examples(
+                    textTemplates,
+                    [text_input]
+            )
             with gr.Accordion("Stimme:"): 
                 with gr.Tab("Stimme auswählen"):
-                    voice_radio = gr.Radio(voiceList, label="Voice", every = 1)
+                    voice_radio = gr.Radio(voiceList, show_label = False, every = 1)
                     delete_voice_button = gr.Button(value = "Stimme löschen", size = 2)
                     reload_button = gr.Button(value = "Stimmen laden", size = 2)
                     onlyText_button = gr.Button("Text to Speech")
@@ -57,6 +67,7 @@ with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as demo:
                     name_generate = gr.Textbox(label = "Name:")
                     gender_generate = gr.Dropdown(["male", "female"], label="Geschlecht:", allow_custom_value = False)
                     age_generate = gr.Dropdown(["young", "middle_aged", "old"], label="Alter:", allow_custom_value = False)
+                    description_generate = gr.Textbox(label = "Beschreibung:")
                     accent_generate = gr.Dropdown(["american", "british"], label="Akzent:", allow_custom_value = False)
                     accentStrength_generate = gr.Slider(0.3, 2.0, step=0.1, label='Akzentstärke:', value=0.5, interactive=True)
                     generateVoice_button = gr.Button("Künstliche Stimme generieren")
@@ -74,7 +85,13 @@ with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as demo:
             with gr.Row():
                 with gr.Accordion("Speech To Text:"): 
                     speechToText_Output = gr.Textbox(lines = 5, label = "", elem_id="speechToText_output", autoscroll = True)
-                    speechToText_Recorder = gr.Audio(sources="microphone", streaming = True)
+                    #speechToText_Recorder = gr.Audio(sources="microphone", streaming = True)
+                    #waveform = gr.make_waveform("recordings/A.Recording.wav")
+                    #video_Waveform = gr.Video(gr.make_waveform("recordings/A.Recording.wav", bar_count = 140, animate=True))
+            with gr.Row():
+                with gr.Accordion("Account:"):
+                    ramainingVoices = gr.Textbox(getAccountData, lines = 1, show_label = False)
+                    reloadRemaining_button = gr.Button("Refresh")
 
 
     #Events
@@ -92,7 +109,7 @@ with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as demo:
 
     generateVoice_button.click(
         press_generateButton,
-        inputs = [name_generate, gender_generate, age_generate, accent_generate, accentStrength_generate, text_input],
+        inputs = [name_generate, gender_generate, age_generate, accent_generate, accentStrength_generate, text_input, description_generate],
         outputs = [audio_output, voice_radio]
     )
 
@@ -108,7 +125,13 @@ with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as demo:
         outputs = [voice_radio]
     )
     
-    reload_button.click(press_reloadButton, None, voice_radio)
+    reload_button.click(press_reloadButton, None, outputs = [voice_radio])
+
+    reloadRemaining_button.click(
+        press_reloadRemainButton,
+        None,
+        outputs = ramainingVoices
+    )
 
     live = True
 

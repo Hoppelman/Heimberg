@@ -1,18 +1,19 @@
 Seperate Funktion für ChatGPT response und ElevenLabs API Call //Umgesetzt
 
+--Anzeigen, wie lange man noch braucht bis Zeichen/Stimmen verbraucht sind
+
+--Text zum klonen hinzufügen -> Dropdown
+
+--Stimme generieren: Gleich klonen
 
 Tests durchführen wie man Antwortgeschwindigkeit reduzieren kann (Latenz reduzieren)
 
-Prio.1 
-Synthetische Stimme erstellen --> Schauen ob das geht //Testen
+Synthetische Stimme erstellen --> Schauen ob das geht //Umgesetzt
 
-Prio 2.
 Add Speech to text to the interface Sichtbarmachung durch einen Button//Umgesetzt
 
-Prio 3 
 Add clone loop -> Loop based on cloned voice audio multiple iterations //Kostet zu viel
 
-Prio 4
 Pflasterstein Loop -> Wie wirkt das //Testen, kostet zu viel
 
 

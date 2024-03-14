@@ -6,9 +6,6 @@ source venv/bin/activate
 -> Under Windows: 
 .\venv\Scripts\activate
 
-Install portaudio:
-brew install portaudio
-
 Install packages:
 pip install -r requirements.txt
 
