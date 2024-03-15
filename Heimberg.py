@@ -3,26 +3,40 @@ import time;
 from elevenlabs import clone
 from elevenlabs import set_api_key
 import os
+from frequency import frequency_wav, get_frequency
 
 with open('config.json') as f:
     config = json.load(f)
 
 set_api_key(config['elevenLabs_key'])
 
-from openAI_functions import initOpenAI, generateText
+from openAI_functions import initOpenAI, generateText, SpeechToText_File
 from elevenLabs_functions import initElevenLabs, textToSpeech, cloneVoice, voiceList, generateVoice, deleteVoice, getVoiceList, getAccountData
-from textTemplates import textTemplates
+from templateData import templateData
 import gradio as gr
 
 initOpenAI(config['api_key'], "Antworte maximal in 4 Sätzen.")
 initElevenLabs(config['elevenLabs_key'])
 
+textTemplates = list(templateData.keys())
 
 def getAnswerWithVoice(user_input, voice_model):
+    if user_input in textTemplates:
+        if templateData[user_input] is not None and isinstance(templateData[user_input], tuple):
+            time.sleep(2)
+            return templateData[user_input][0], templateData[user_input][1]
     text = generateText(user_input)
     outputFile = textToSpeech(text, voice_model)
     print(voice_model)
     return text, outputFile
+
+def press_onlyText_button(user_input, voice_model):
+    if user_input in textTemplates:
+        if templateData[user_input] is not None and isinstance(templateData[user_input], str):
+            time.sleep(2)
+            return templateData[user_input]
+    ouputFile = textToSpeech(user_input, voice_model)
+    return ouputFile
 
 def press_reloadButton():
     print(voiceList)
@@ -46,8 +60,12 @@ def press_generateButton(name, gender, age, accent, accentStrength, text, descri
     audio_response = cloneVoice(text, voice_sample, name, description, False, False, False)
     return audio_response, gr.Radio(getVoiceList(), label="Voice", every=1)
 
+def stop_SpeechToTextRecording(recording):
+    text = SpeechToText_File(recording)
+    return text
 
-with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as demo:
+
+with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as Anrede1:
     with gr.Row():
         with gr.Column():
             text_input = gr.Textbox(lines = 4, label = "Eingabe:")
@@ -74,7 +92,7 @@ with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as demo:
                 with gr.Tab("Stimme klonen"):
                     name_clone = gr.Dropdown(["A.Klon", "M.Klon"], label="Name:", allow_custom_value = True)
                     description_clone = gr.Textbox(label = "Beschreibung:")
-                    clone_recording1 = gr.Audio(sources="microphone", type = "filepath", format = "mp3")
+                    clone_recording1 = gr.Audio(sources="microphone", type = "filepath", format = "wav")
                     A_check = gr.Checkbox(label="A.Recording", info="Nutze das A. Recording zum Klonen")
                     M_check = gr.Checkbox(label="M.Recording", info="Nutze das M. Recording zum Klonen")
                     output_check = gr.Checkbox(label="Audio Output", info="Nutze generiertes Audio zum Klonen")
@@ -85,14 +103,17 @@ with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as demo:
             with gr.Row():
                 with gr.Accordion("Speech To Text:"): 
                     speechToText_Output = gr.Textbox(lines = 5, label = "", elem_id="speechToText_output", autoscroll = True)
-                    #speechToText_Recorder = gr.Audio(sources="microphone", streaming = True)
+                    speechToTextQuestion_Audio = gr.Audio(sources="microphone", type = "filepath", format = "wav", label = "Frage stellen")
                     #waveform = gr.make_waveform("recordings/A.Recording.wav")
                     #video_Waveform = gr.Video(gr.make_waveform("recordings/A.Recording.wav", bar_count = 140, animate=True))
+            with gr.Row():
+                with gr.Accordion("Hertztester:"):
+                    frequency_Audio = gr.Audio(sources="microphone", type = "filepath", format = "wav", label = "Aufnahme starten")
+                    frequency_Output = gr.Textbox(lines = 1, label = "Hertz: ")
             with gr.Row():
                 with gr.Accordion("Account:"):
                     ramainingVoices = gr.Textbox(getAccountData, lines = 1, show_label = False)
                     reloadRemaining_button = gr.Button("Refresh")
-
 
     #Events
     GPT_button.click(
@@ -102,7 +123,7 @@ with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as demo:
     )
 
     onlyText_button.click(
-        textToSpeech, 
+        press_onlyText_button, 
         inputs = [text_input, voice_radio], 
         outputs = [audio_output]
     )
@@ -133,7 +154,31 @@ with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as demo:
         outputs = ramainingVoices
     )
 
-    live = True
+    speechToTextQuestion_Audio.stop_recording(
+        stop_SpeechToTextRecording,
+        speechToTextQuestion_Audio,
+        text_input
+    )
 
+    frequency_Audio.stop_recording(
+        get_frequency,
+        frequency_Audio,
+        frequency_Output
+    )
+
+
+live = True
+
+Eustachius = gr.load(
+    "huggingface/facebook/wav2vec2-base-960h",
+    title=None,
+    inputs=gr.Microphone(type="filepath"),
+    description="Let me try to guess what you're saying!",
+)
+
+with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as Heimberg:
+    text_input = gr.Textbox(lines = 4, label = "Eingabe:")
+
+demo = gr.TabbedInterface([Anrede1, Eustachius, Heimberg], ["Anrede1", "Eustachius", "Heimberg"])
 
 demo.launch(share=False)

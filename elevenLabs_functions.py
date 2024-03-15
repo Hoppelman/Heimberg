@@ -2,6 +2,8 @@ from elevenlabs import generate, play, voices, save, clone, stream
 from elevenlabs import set_api_key
 import shutil
 import requests
+import librosa
+import numpy as np
 
 voiceList = []
 myVoices = voices()
@@ -179,6 +181,7 @@ def deleteVoice(name):
 
         return response.status_code
     
+    
 def getAccountData():
     url = "https://api.elevenlabs.io/v1/user/subscription"
 
@@ -187,4 +190,5 @@ def getAccountData():
     response = requests.request("GET", url, headers=headers)
     print("Remaining voices: " + str(95 - response.json().get("voice_add_edit_counter")))
     return "Remaining voices: " + str(95 - response.json().get("voice_add_edit_counter")) + "\n" + "Remaining characters: " + str(response.json().get("character_limit") - response.json().get("character_count"))
+
 

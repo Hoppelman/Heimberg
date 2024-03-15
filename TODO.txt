@@ -1,33 +1,43 @@
-Seperate Funktion für ChatGPT response und ElevenLabs API Call //Umgesetzt
 
---Anzeigen, wie lange man noch braucht bis Zeichen/Stimmen verbraucht sind
 
---Text zum klonen hinzufügen -> Dropdown
+--Hz frequenz visualisieren 
 
---Stimme generieren: Gleich klonen
-
-Tests durchführen wie man Antwortgeschwindigkeit reduzieren kann (Latenz reduzieren)
-
-Synthetische Stimme erstellen --> Schauen ob das geht //Umgesetzt
-
-Add Speech to text to the interface Sichtbarmachung durch einen Button//Umgesetzt
-
-Add clone loop -> Loop based on cloned voice audio multiple iterations //Kostet zu viel
-
-Pflasterstein Loop -> Wie wirkt das //Testen, kostet zu viel
+--Interface lesbarer -> größer und lesbarer 
 
 
 
-Add speach recognition //Done
+//Szenen Tracker entwickeln -> Anzeige bei welche Szene man sich befindet, evt. auch mit Text, 
+passende audio cues und BackUp files für jede Szene//Maybe ?
 
-Cloning radio button hinzufügen //Done
+//Tests durchführen wie man Antwortgeschwindigkeit reduzieren kann (Latenz reduzieren)
 
-Streaming implementieren, maybe?//Naaaah
+++ChatGPT: Antworten faken: Bspw. Heimberg //Done
 
-BackUp File einfügen//Nicht live
+++Aufnahme machen und trankribierter Text direkt in das Textfeld kopieren //Done
 
-Szenen Tracker entwickeln -> Anzeige bei welche Szene man sich befindet, evt. auch mit Text, 
-passende audio cues und BackUp files für jede Szene
+++Anzeigen, wie lange man noch braucht bis Zeichen/Stimmen verbraucht sind//Done
+
+++Text zum klonen hinzufügen -> Dropdown//Done
+
+++Stimme generieren: Gleich klonen//Done
+
+++Synthetische Stimme erstellen --> Schauen ob das geht //Umgesetzt
+
+++Add Speech to text to the interface Sichtbarmachung durch einen Button//Umgesetzt
+
+++Add clone loop -> Loop based on cloned voice audio multiple iterations //Kostet zu viel
+
+XXPflasterstein Loop -> Wie wirkt das //Testen, kostet zu viel
+
+++Seperate Funktion für ChatGPT response und ElevenLabs API Call //Umgesetzt
+
+++Add speach recognition //Done
+
+++Cloning radio button hinzufügen //Done
+
+//Streaming implementieren, maybe?//Naaaah
+
+XXBackUp File einfügen//Nicht live
 
 
 
