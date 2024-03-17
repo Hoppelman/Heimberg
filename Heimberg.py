@@ -20,6 +20,10 @@ initElevenLabs(config['elevenLabs_key'])
 
 textTemplates = list(templateData.keys())
 
+theme = gr.themes.Monochrome(
+    text_size="lg",
+)
+
 def getAnswerWithVoice(user_input, voice_model):
     if user_input in textTemplates:
         if templateData[user_input] is not None and isinstance(templateData[user_input], tuple):
@@ -33,7 +37,7 @@ def getAnswerWithVoice(user_input, voice_model):
 def press_onlyText_button(user_input, voice_model):
     if user_input in textTemplates:
         if templateData[user_input] is not None and isinstance(templateData[user_input], str):
-            time.sleep(2)
+            time.sleep(8)
             return templateData[user_input]
     ouputFile = textToSpeech(user_input, voice_model)
     return ouputFile
@@ -55,65 +59,104 @@ def press_cloneButton(text_input, clone_recording1, name_clone, description_clon
 
 def press_generateButton(name, gender, age, accent, accentStrength, text, description):
     print("GenerateButton")
-    generate_text = "First we thought the PC was a calculator. Then we found out how to turn numbers into letters and we thought it was a typewriter."
-    voice_sample = generateVoice(gender, age, accent, accentStrength, generate_text)
-    audio_response = cloneVoice(text, voice_sample, name, description, False, False, False)
+    audio_response = "recordings/output.wav"
+    time.sleep(3)
+    #generate_text = "First we thought the PC was a calculator. Then we found out how to turn numbers into letters and we thought it was a typewriter."
+    #voice_sample = generateVoice(gender, age, accent, accentStrength, generate_text)
+    #audio_response = cloneVoice(text, voice_sample, name, description, False, False, False)
     return audio_response, gr.Radio(getVoiceList(), label="Voice", every=1)
 
 def stop_SpeechToTextRecording(recording):
     text = SpeechToText_File(recording)
     return text
 
+def showLoadingAnimation_T2S():
+    print("Test")
+    return gr.Gallery(
+        value = ["media/Telefonistin/Telefonistin.gif", "media/Telefonistin/Telefonistin6.gif", "media/Telefonistin/Telefonistin.gif"],
+        visible = True, label="Generated images", show_label=False, elem_id="gallery"
+        , columns=[3], rows=[1], object_fit="contain", height="auto"
+        )
 
-with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as Anrede1:
-    with gr.Row():
-        with gr.Column():
-            text_input = gr.Textbox(lines = 4, label = "Eingabe:")
-            with gr.Accordion("Vorlagen:"): 
-                gr.Examples(
-                    textTemplates,
-                    [text_input]
-            )
-            with gr.Accordion("Stimme:"): 
-                with gr.Tab("Stimme auswählen"):
-                    voice_radio = gr.Radio(voiceList, show_label = False, every = 1)
-                    delete_voice_button = gr.Button(value = "Stimme löschen", size = 2)
-                    reload_button = gr.Button(value = "Stimmen laden", size = 2)
-                    onlyText_button = gr.Button("Text to Speech")
-                    GPT_button = gr.Button("Generiere GPT Response")
-                with gr.Tab("Stimme generieren"):
-                    name_generate = gr.Textbox(label = "Name:")
-                    gender_generate = gr.Dropdown(["male", "female"], label="Geschlecht:", allow_custom_value = False)
-                    age_generate = gr.Dropdown(["young", "middle_aged", "old"], label="Alter:", allow_custom_value = False)
-                    description_generate = gr.Textbox(label = "Beschreibung:")
-                    accent_generate = gr.Dropdown(["american", "british"], label="Akzent:", allow_custom_value = False)
-                    accentStrength_generate = gr.Slider(0.3, 2.0, step=0.1, label='Akzentstärke:', value=0.5, interactive=True)
-                    generateVoice_button = gr.Button("Künstliche Stimme generieren")
-                with gr.Tab("Stimme klonen"):
-                    name_clone = gr.Dropdown(["A.Klon", "M.Klon"], label="Name:", allow_custom_value = True)
-                    description_clone = gr.Textbox(label = "Beschreibung:")
-                    clone_recording1 = gr.Audio(sources="microphone", type = "filepath", format = "wav")
-                    A_check = gr.Checkbox(label="A.Recording", info="Nutze das A. Recording zum Klonen")
-                    M_check = gr.Checkbox(label="M.Recording", info="Nutze das M. Recording zum Klonen")
-                    output_check = gr.Checkbox(label="Audio Output", info="Nutze generiertes Audio zum Klonen")
-                    klon_button = gr.Button("klonen")
-        with gr.Column():
-            text_output = gr.Textbox(lines = 4, label = "Antwort:")
-            audio_output = gr.Audio(autoplay = False)
-            with gr.Row():
-                with gr.Accordion("Speech To Text:"): 
-                    speechToText_Output = gr.Textbox(lines = 5, label = "", elem_id="speechToText_output", autoscroll = True)
-                    speechToTextQuestion_Audio = gr.Audio(sources="microphone", type = "filepath", format = "wav", label = "Frage stellen")
-                    #waveform = gr.make_waveform("recordings/A.Recording.wav")
-                    #video_Waveform = gr.Video(gr.make_waveform("recordings/A.Recording.wav", bar_count = 140, animate=True))
-            with gr.Row():
-                with gr.Accordion("Hertztester:"):
-                    frequency_Audio = gr.Audio(sources="microphone", type = "filepath", format = "wav", label = "Aufnahme starten")
-                    frequency_Output = gr.Textbox(lines = 1, label = "Hertz: ")
-            with gr.Row():
-                with gr.Accordion("Account:"):
-                    ramainingVoices = gr.Textbox(getAccountData, lines = 1, show_label = False)
-                    reloadRemaining_button = gr.Button("Refresh")
+def showLoadingAnimation_Generate():
+    print("Generate_Loading_Animation")
+    return gr.Gallery(
+        value = ["media/MRI/MRI1.gif", "media/VocalCords/Voice.gif", "media/MRI/MRI3.gif"],
+        visible = True, label="Generated images", show_label=False, elem_id="gallery"
+        , columns=[3], rows=[1], object_fit="contain", height="auto"
+        )
+
+def hideLoadingAnimation():
+    return gr.Gallery(
+        value = ["media/Telefonistin/Telefonistin.gif", "media/Telefonistin/Telefonistin6.gif", "media/Telefonistin/Telefonistin.gif"],
+        visible = False, label="Generated images", show_label=False, elem_id="gallery"
+        , columns=[3], rows=[1], object_fit="contain", height="auto"
+        )
+
+
+
+with gr.Blocks(js="speechToText.js") as demo:
+    with gr.Tab("Eustachius"):
+        text_input = gr.Textbox(lines = 4, label = "Eingabe:")
+    with gr.Tab("Heimberg"):
+        with gr.Row():
+            with gr.Column():
+                text_input = gr.Textbox(lines = 4, label = "Eingabe:")
+                with gr.Accordion("Vorlagen:"): 
+                    gr.Examples(
+                        textTemplates,
+                        [text_input]
+                )
+                with gr.Accordion("Stimme:"): 
+                    with gr.Tab("Stimme auswählen"):
+                        voice_radio = gr.Radio(voiceList, show_label = False, every = 1)
+                        delete_voice_button = gr.Button(value = "Stimme löschen", size = 2)
+                        reload_button = gr.Button(value = "Stimmen laden", size = 2)
+                        onlyText_button = gr.Button("Text to Speech")
+                        GPT_button = gr.Button("Generiere GPT Response")
+                    with gr.Tab("Stimme generieren"):
+                        name_generate = gr.Textbox(label = "Name:")
+                        gender_generate = gr.Dropdown(["male", "female"], label="Geschlecht:", allow_custom_value = False)
+                        age_generate = gr.Dropdown(["young", "middle_aged", "old"], label="Alter:", allow_custom_value = False)
+                        description_generate = gr.Textbox(label = "Beschreibung:")
+                        accent_generate = gr.Dropdown(["american", "british"], label="Akzent:", allow_custom_value = False)
+                        accentStrength_generate = gr.Slider(0.3, 2.0, step=0.1, label='Akzentstärke:', value=0.5, interactive=True)
+                        generateVoice_button = gr.Button("Künstliche Stimme generieren")
+                    with gr.Tab("Stimme klonen"):
+                        name_clone = gr.Dropdown(["A.Klon", "M.Klon"], label="Name:", allow_custom_value = True)
+                        description_clone = gr.Textbox(label = "Beschreibung:")
+                        clone_recording1 = gr.Audio(sources="microphone", type = "filepath", format = "wav")
+                        A_check = gr.Checkbox(label="A.Recording", info="Nutze das A. Recording zum Klonen")
+                        M_check = gr.Checkbox(label="M.Recording", info="Nutze das M. Recording zum Klonen")
+                        output_check = gr.Checkbox(label="Audio Output", info="Nutze generiertes Audio zum Klonen")
+                        klon_button = gr.Button("klonen")
+            with gr.Column():
+                text_output = gr.Textbox(lines = 4, label = "Antwort:")
+                audio_output = gr.Audio(autoplay = False)
+                output_gallery = gr.Gallery(
+                            value = ["media/Telefonistin/Telefonistin.gif", "media/Telefonistin/Telefonistin6.gif", "media/Telefonistin/Telefonistin.gif"],
+                            visible = False, label="Generated images", show_label=False, elem_id="gallery"
+                            , columns=[3], rows=[1], object_fit="contain", height="auto"
+                        )
+                with gr.Row():
+                    with gr.Accordion("Speech To Text:"): 
+                        speechToText_Output = gr.Textbox(lines = 5, label = "", elem_id="speechToText_output", autoscroll = True)
+                        speechToTextQuestion_Audio = gr.Audio(sources="microphone", type = "filepath", format = "wav", label = "Frage stellen")
+                        #waveform = gr.make_waveform("recordings/A.Recording.wav")
+                        #video_Waveform = gr.Video(gr.make_waveform("recordings/A.Recording.wav", bar_count = 140, animate=True))
+                        textToSpeech_Gallery = gr.Gallery(
+                            value = ["media/Schreibmaschine/Schreibmaschine1.gif", "media/Schreibmaschine/Schreibmaschine2.gif", "media/Schreibmaschine/Schreibmaschine3.gif"],
+                            label="Generated images", show_label=False, elem_id="gallery"
+                            , columns=[3], rows=[1], object_fit="contain", height="auto"
+                        )
+                with gr.Row():
+                    with gr.Accordion("Hertztester:"):
+                        frequency_Audio = gr.Audio(sources="microphone", type = "filepath", format = "wav", label = "Aufnahme starten")
+                        frequency_Output = gr.Textbox(lines = 1, label = "Hertz: ")
+                with gr.Row():
+                    with gr.Accordion("Account:"):
+                        ramainingVoices = gr.Textbox(getAccountData, lines = 1, show_label = False)
+                        reloadRemaining_button = gr.Button("Refresh")
 
     #Events
     GPT_button.click(
@@ -128,10 +171,28 @@ with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as Anrede1:
         outputs = [audio_output]
     )
 
+    onlyText_button.click(
+        showLoadingAnimation_T2S, 
+        None, 
+        outputs = [output_gallery]
+    )
+
+    audio_output.change(
+        hideLoadingAnimation,
+        None,
+        outputs = [output_gallery]
+    )
+
     generateVoice_button.click(
         press_generateButton,
         inputs = [name_generate, gender_generate, age_generate, accent_generate, accentStrength_generate, text_input, description_generate],
         outputs = [audio_output, voice_radio]
+    )
+
+    generateVoice_button.click(
+        showLoadingAnimation_Generate,
+        None,
+        outputs = [output_gallery]
     )
 
     klon_button.click(
@@ -168,17 +229,5 @@ with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as Anrede1:
 
 
 live = True
-
-Eustachius = gr.load(
-    "huggingface/facebook/wav2vec2-base-960h",
-    title=None,
-    inputs=gr.Microphone(type="filepath"),
-    description="Let me try to guess what you're saying!",
-)
-
-with gr.Blocks(theme= gr.themes.Base(), js="speechToText.js") as Heimberg:
-    text_input = gr.Textbox(lines = 4, label = "Eingabe:")
-
-demo = gr.TabbedInterface([Anrede1, Eustachius, Heimberg], ["Anrede1", "Eustachius", "Heimberg"])
 
 demo.launch(share=False)

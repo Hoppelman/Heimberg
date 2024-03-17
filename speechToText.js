@@ -1,7 +1,7 @@
 
 
 function textToSpeech() {
-
+    console.log("Js is loaded")
     var containerDiv = document.getElementById('speechToText_output');
     var textarea = containerDiv.querySelector('[data-testid="textbox"]');
     console.log(textarea);
@@ -13,6 +13,7 @@ function textToSpeech() {
     window.SpeechRecognition || window.webkitSpeechRecognition;
 
     textbox = document.getElementById("speechToText_output");
+    console.log("Js is loaded")
     console.log(textbox);
 
     const recognition = new SpeechRecognition();
