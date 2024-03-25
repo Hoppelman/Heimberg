@@ -23,6 +23,7 @@ def updateVoiceList():
         if n.category != 'premade':
             voiceList.append(n.name)
     print("Print voiceList: ")
+    voiceList.append("Dorothy")
     print(voiceList)
 
 def getVoiceList():
