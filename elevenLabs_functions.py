@@ -51,10 +51,12 @@ def textToSpeech(text, voice_model):
     return "recordings/output.wav"
     
 #For cloning the voice. Also called when generating a voice, recording is then the sample generated
-def cloneVoice(text, recording, name, description, A_check, M_check, output_check):
+def cloneVoice(text, recording, name, description):
     print("cloning....")
 
     files = []
+
+    print(recording)
 
     if recording is not None:
         files.append(recording)
@@ -65,14 +67,8 @@ def cloneVoice(text, recording, name, description, A_check, M_check, output_chec
         if name == "A.Klon":
             saveRecording(recording, "recordings/A.Recording.wav")
 
-    if output_check:
-        files.append("recordings/output.wav")
-
-    if A_check:
-        files.append("recordings/A.Recording.wav")
-
-    if M_check:
-        files.append("recordings/M.Recording.wav")
+    if recording is None:
+        return "recording_missing"
 
     clone(
         name=name,

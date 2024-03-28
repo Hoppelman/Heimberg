@@ -8,6 +8,10 @@ function textToSpeech() {
     var textarea_G = containerDiv_G.querySelector('[data-testid="textbox"]');
     var textarea_T = containerDiv_T.querySelector('[data-testid="textbox"]');
     var textarea_H = containerDiv_H.querySelector('[data-testid="textbox"]');
+    textarea_T.style.textAlign = "center";
+    textarea_T.style.fontSize = "20px";
+    textarea_G.style.textAlign = "center";
+    textarea_G.style.fontSize = "20px";
     console.log(textarea_G);
     let output_text = textarea_G.value;
     let currentText = "";
@@ -68,6 +72,8 @@ function textToSpeech() {
     
     //EVENTS
 
+    //events when the left arrow is pressed 
+
     let currentTab = "Anrede 1";
     eventCount = 0;
     
@@ -81,29 +87,33 @@ function textToSpeech() {
             console.log("Left Arrow pressed")
             
         }
-        if (e.key == "ArrowRight") {
+        if (e.key == "ArrowUp") {
             //document.getElementById("my_btn").click();
             console.log("Right Arrow")
             console.log("Current Tab: " + currentTab);
             console.log("EventCount: " + eventCount);
             if (e.repeat) return;
 
+            if(check_titleCard(currentTab)) return
+
             if(currentTab === "Anrede 1") {
-                document.getElementById("Heimberg-button").click();
-                return
-            } else if(currentTab === "Heimberg") {
                 if(eventCount === 0) {
-                    document.getElementById("Heimberg-titleCard").style.display = "none";
-                } else if(eventCount === 1) {
-                    document.getElementById("Heimberg-webcam").style.display = "none";
+                    play_Video("Anrede 1_titleCard-Video");
                 } else {
-                    document.getElementById("Ratgeber Hausfrau-button").click();
+                    document.getElementById("Heimberg-button").click();
                     return
                 }
+                
+            } else if(currentTab === "Heimberg") {
+                if(eventCount === 0) {
+                    document.getElementById("Heimberg-webcam").style.display = "none";
+                    play_Video("Heimberg_Schweigen-Video");
+                } else if(eventCount === 1) {
+                    document.getElementById("Ratgeber Hausfrau-button").click();
+                    return
+                } 
             } else if(currentTab === "Ratgeber Hausfrau") {
                 if(eventCount === 0) {
-                    document.getElementById("Ratgeber_Hausfrau-titleCard").style.display = "none";
-                } else {
                     document.getElementById("Erfahrungen-button").click();
                     return
                 }
@@ -111,7 +121,27 @@ function textToSpeech() {
                 document.getElementById("Stimmuntersuchung-button").click();
                 return
             } else if(currentTab === "Stimmuntersuchung") {
-                document.getElementById("Stimmuntersuchung-titleCard").style.display = "none";
+                if(eventCount === 0) {
+                    document.getElementById("Stimmuntersuchung-webcam").style.display = "none";
+                } else if(eventCount === 1) {
+                    document.getElementById("Anrede_2-button").click();
+                    return
+                }
+            } else if(currentTab === "Anrede 2") {
+                if(eventCount === 0) {
+                    document.getElementById("Trigger-button").click();
+                    return
+                }
+            } else if(currentTab === "Trigger") {
+                if(eventCount === 0) {
+                    document.getElementById("Gedicht-button").click();
+                    return
+                }
+            } else if(currentTab === "Gedicht") {
+                if(eventCount === 0) {
+                    document.getElementById("Glimmer-button").click();
+                    return
+                }
             }
 
             eventCount++;
@@ -121,13 +151,8 @@ function textToSpeech() {
     document.addEventListener('keydown', shortcuts, false);
 
 
-    /*var buttonElement = document.getElementById("Heimberg-button");
-    console.log(buttonElement)
-
-    buttonElement.addEventListener("click", function() {
-        // Your code to be executed when the button is clicked goes here
-        console.log("Button clicked!");
-    });*/
+    
+    //Events that trigger when nav bar is changed TODO -> Play title card
 
     var tabNav = document.querySelector('.tab-nav');
 
@@ -140,65 +165,107 @@ function textToSpeech() {
             //console.log('Button clicked: ' + event.target.textContent);
             currentTab = event.target.textContent.trim();
             console.log("new tab selected: " + currentTab)
+            play_titleCard(currentTab);
+            if(currentTab === "Heimberg" || currentTab === "Trigger" || currentTab === "Glimmer") {
+                output_text = "";
+                textarea_T.value = "";
+                textarea_T.scrollTop = textarea_T.scrollHeight;
+                textarea_G.value = "";
+                textarea_G.scrollTop = textarea_G.scrollHeight;
+                textarea_H.value = "";
+                textarea_H.scrollTop = textarea_G.scrollHeight;
+            }
+
+            if(currentTab === "Heimberg") {
+                activate_WebCam("Heimberg")
+            }
+
+            if(currentTab === "Ratgeber Hausfrau") {
+                video_Loop("Ratgeber Hausfrau-Video");
+            }
+
+            if(currentTab === "Trigger") {
+                video_Loop("Trigger-Video");
+            }
+
+            if(currentTab === "Glimmer") {
+                video_Loop("Glimmer-Video");
+            }
+
+            if(currentTab === "Stimmuntersuchung") {
+                activate_WebCam("Stimmuntersuchung");
+            }
+                
             eventCount = 0;
         }
     });
 
-    //document.addEventListener(document.getElementById("Heimberg-button").click(), test, false);
-
-    /*const originalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
     
-    navigator.mediaDevices.getUserMedia = (constraints) => {
-      if (!constraints.video.facingMode) {
-        constraints.video.facingMode = {ideal: "environment"};
-      }
-      return originalGetUserMedia(constraints);
-    };*/
+    //Video play 
 
-    /*const originalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
-    console.log("OriginalGetUserMedia: );
-    console.log(originalGetUserMedia)*/
-
+    function video_Loop(name) {
+        var parentDiv = document.getElementById(name);
+        var video = parentDiv.querySelector("video");
+        video.currentTime = 0;
+        video.play();
     
-    /*navigator.mediaDevices.getUserMedia = (constraints) => {
-      if (!constraints.video.facingMode) {
-        constraints.video.facingMode = {ideal: "environment"};
-      }
-      return originalGetUserMedia(constraints);
-    };*/
-
-    /*console.log("Head skript")
-    const originalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
-
-    console.log("Head skript2")
-    navigator.mediaDevices.getUserMedia = async (constraints) => {
-    try {
-        // Check if constraints.video is defined and if deviceId is not set
-        if (constraints.video && !constraints.video.deviceId) {
-            // Get list of available media devices
-            const devices = await navigator.mediaDevices.enumerateDevices();
-
-            // Find the USB-C camera by checking its label or kind
-            const usbCCamera = devices.find(device => 
-                device.kind === 'videoinput' && 
-                (device.label.includes('USB-C') || device.label.includes('your_device_label_here'))
-            );
-            console.log(devices)
-            // If USB-C camera is found, set its deviceId in the constraints
-            if (usbCCamera) {
-                constraints.video.deviceId = { exact: usbCCamera.deviceId };
-            }
-            console.log(usbCCamera)
-        }
-
-        // Call the original getUserMedia with modified constraints
-        return await originalGetUserMedia(constraints);
-    } catch (error) {
-        // Handle errors
-        console.error('Error accessing media devices:', error);
-        throw error;
+        video.addEventListener("ended", function() {
+            video.currentTime = 0; // Reset video to beginning
+            video.play(); // Play the video again
+        });
     }
-    };*/
+
+    function play_titleCard(name) {
+        var parentDiv = document.getElementById(name + "_titleCard-Video");
+        var video = parentDiv.querySelector("video");
+
+        //If commented out: Title wont be shown everytime tab is selected
+        parentDiv.style.display = "block";
+    
+        video.play();
+    
+        video.addEventListener("ended", function() {
+            parentDiv.style.display = "none";
+        });
+    }
+
+    function play_Video(name) {
+        var parentDiv = document.getElementById(name);
+        var video = parentDiv.querySelector("video");
+
+
+        //If commented out: Title wont be shown everytime tab is selected
+        parentDiv.style.display = "block";
+        video.currentTime = 0;
+        video.play();
+    
+        video.addEventListener("ended", function() {
+            parentDiv.style.display = "none";
+        });
+    }
+
+    function check_titleCard(name) {
+        var parentDiv = document.getElementById(name + "_titleCard-Video");
+        var video = parentDiv.querySelector("video");
+
+        if(parentDiv.style.display === "none") {
+            return false;
+        }
+        parentDiv.style.display = "none";
+        return true;
+    }
+
+    function activate_WebCam(name) {
+        var parentDiv = document.getElementById(name + "-webcam");
+        console.log(parentDiv)
+        var webcam_Button = parentDiv.querySelector("button.svelte-qbrfs");
+        console.log(webcam_Button)
+
+        //If commented out: Title wont be shown everytime tab is selected
+        parentDiv.style.display = "block";
+    
+        webcam_Button.click();
+    }
     
 
 }
